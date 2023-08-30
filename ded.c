@@ -8,6 +8,9 @@ int compare_doubles (double k, double n)//TODO make compare_doubles function.
 
 int get_coeff (double* a, double* b, double* c)
 {
+    if (a == NULL)
+        printf("NULL PTR!!!");
+        
     printf ("Введите коэффициенты квадратного уравнения:\n");
     while (scanf ("%lf %lf %lf", a, b, c) != 3)
     {
