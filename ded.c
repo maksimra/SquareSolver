@@ -1,23 +1,28 @@
 #include "ded.h"
 
+double const limit = 1e-6;
+
 int compare_doubles (double k, double n)//TODO make compare_doubles function.
 {
-    double const limit = 1e-6;
     return fabs(k - n) < limit;
 }
-
-int get_coeff (double* a, double* b, double* c)
+static void skip_line()
 {
-    if (a == NULL)
-        printf("NULL PTR!!!");
-        
+    int ch = 0;
+    while((ch = getchar()) != '\n' && ch != EOF)
+        continue;
+}
+void get_coeff (double* a, double* b, double* c)
+{
     printf ("Введите коэффициенты квадратного уравнения:\n");
     while (scanf ("%lf %lf %lf", a, b, c) != 3)
     {
-        printf ("Введены некорректные значения:(\n");
-        break;
+        printf ("Некорректные значения:(\nВведите снова:\n");
+        skip_line();
+       // getint(*a);
+        //getint(*b);
+        //getint(*c);
     }
-    return 0;
 }
 
 void solve_quadratic_equation (double a, double b, double c, double *x1, double *x2, int *nRoots)
@@ -77,12 +82,12 @@ void solve_quadratic_equation (double a, double b, double c, double *x1, double 
         }
     }
 }
-void solve_linear_equation (double b1, double c1, int *nRoots, double *x1)
+void solve_linear_equation (double b, double c, int *nRoots, double *x1)
 {
     int x;
-    if (compare_doubles(0, b1))
+    if (compare_doubles(0, b))
     {
-        if (compare_doubles(0, c1))
+        if (compare_doubles(0, c))
         {
             *nRoots = INF_ROOTS;
         }
@@ -93,7 +98,7 @@ void solve_linear_equation (double b1, double c1, int *nRoots, double *x1)
     }
     else
     {
-        *x1 = -c1 / b1;
+        *x1 = compare_doubles(0, - c / b) ? 0 : (-c / b);
         *nRoots = ONE_ROOT;
     }
 }
