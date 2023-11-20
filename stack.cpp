@@ -1,5 +1,15 @@
 #include <stdio.h>
 
+void StackCtor (struct Stack *pstk, int funct_capacity);
+
+void StackDtor (struct Stack *pstk);
+
+void StackPush (struct Stack *pstk, int elem, enum ERROR* error);
+
+int StackPop (struct Stack *pstk, enum ERROR* error);
+
+void PrintError (enum ERROR error);
+
 struct Stack
 {
     int *data;
@@ -24,6 +34,7 @@ int main (void)
     StackPush (&stk, 10, &error);
     int x = StackPop (&stk, &error);
     StackDtor (&stk);
+    PrintError (error);
     return 0;
 }
 
@@ -80,4 +91,19 @@ int StackPop (struct Stack *pstk, enum ERROR* error)
             pstk->data = temp;
     }
     return elem;
+}
+
+void PrintError (enum ERROR error)
+{
+    switch (error)
+    {
+        case REALLOC_FAIL:
+            printf ("Ошибка в работе функции realloc.\n");
+            break;
+        case POP_FAIL:
+            printf ("Ошибка в работе функции pop.\n");
+            break;
+        default:
+            printf ("Ошибок в работе функций не выявлено.\n");
+    }
 }
