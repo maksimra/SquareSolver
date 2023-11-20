@@ -9,9 +9,12 @@ struct Stack
 
 enum ERROR
 {
-    realloc_FAIL = 1,
-    pop_FAIL;
+    REALLOC_FAIL = 1,
+    POP_FAIL;
 };
+
+const int POISON = 666;
+const float sample = 2.5;
 
 int main (void)
 {
@@ -39,23 +42,42 @@ void StackDtor (struct Stack *pstk)
     pstk->size = 0;
 }
 
-void StackPush (struct Stack *pstk, int el, enum ERROR* error)
+void StackPush (struct Stack *pstk, int elem, enum ERROR* error)
 {
-    //if (pstk->size >= pstk->capacity)
-    //{
-    //    pstk->data = (realloc (pstk->data, pstk->capacity * 2) != NULL) ? realloc (pstk->data, pstk->capacity * 2) ://TODO:спросить
-    *(pstk->data + pstk->size) = el;
+    if (pstk->size >= pstk->capacity)
+    {
+        int *temp = realloc (pstk->data, pstk->capacity * 2);
+        if (temp == NULL)
+        {
+            *error = REALLOC_FAIL;
+            return POISON;
+        }
+        else
+            pstk->data = temp;
+    }
+    *(pstk->data + pstk->size) = elem;
     ++(pstk->size);
 }
 
 int StackPop (struct Stack *pstk, enum ERROR* error)
 {
-    if (pstk->pop == 0)
+    if (pstk->size <= 0)
     {
-        *error = pop_FAIL;
-        return -1; //спросить, что лучше
+        *error = POP_FAIL;
+        return POISON;
     }
     --(pstk->size);
-    int el = *(pstk->data + pstk->size);
-    return el;
+    int elem = *(pstk->data + pstk->size);
+    if (pstk->size * 2 < pstk->capacity / sample)
+    {
+        int *temp = realloc (pstk->data, pstk->capacity / 2);
+        if (temp == NULL)
+        {
+            *error = REALLOC_FAIL;
+            return POISON;
+        }
+        else
+            pstk->data = temp;
+    }
+    return elem;
 }
